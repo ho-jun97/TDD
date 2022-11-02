@@ -26,17 +26,18 @@ public class MembershipRepositoryTest {
         // given
         final Membership membership = Membership.builder()
                 .userId("userId")
-                .membershipName(MembershipType.NAVER)
+                .membershipType(MembershipType.NAVER)
                 .point(10000)
                 .build();
         // when
-
-        final Membership result = membershipRepository.save(membership);
+        membershipRepository.save(membership);
+        final Membership findResult = membershipRepository.findByUserIdAndMembershipType("userId", MembershipType.NAVER);
 
         // then
-        assertThat(result.getId()).isNotNull();
-        assertThat(result.getUserId()).isEqualTo("userId");
-        assertThat(result.getMembershipName()).isEqualTo(MembershipType.NAVER);
-        assertThat(result.getPoint()).isEqualTo(10000);
+        assertThat(findResult).isNotNull();
+        assertThat(findResult.getId()).isNotNull();
+        assertThat(findResult.getUserId()).isEqualTo("userId");
+        assertThat(findResult.getMembershipType()).isEqualTo(MembershipType.NAVER);
+        assertThat(findResult.getPoint()).isEqualTo(10000);
     }
 }

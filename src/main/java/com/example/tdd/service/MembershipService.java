@@ -5,6 +5,7 @@ import com.example.tdd.domain.MembershipRepository;
 import com.example.tdd.domain.MembershipType;
 import com.example.tdd.exception.MembershipErrorResult;
 import com.example.tdd.exception.MembershipException;
+import com.example.tdd.web.dto.MemberShipResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +15,7 @@ public class MembershipService {
 
     private final MembershipRepository membershipRepository;
 
-    public Membership addMembership(final String userId, final MembershipType membershipType, final Integer point){
+    public MemberShipResponse addMembership(final String userId, final MembershipType membershipType, final Integer point){
         final Membership result = membershipRepository.findByUserIdAndMembershipType(userId, membershipType);
 
         if(result != null){
@@ -26,6 +27,10 @@ public class MembershipService {
                 .membershipType(membershipType)
                 .build();
 
-        return membershipRepository.save(membership);
+        final Membership savedMembership = membershipRepository.save(membership);
+        return MemberShipResponse.builder()
+                .id(savedMembership.getId())
+                .membershipType(savedMembership.getMembershipType())
+                .build();
     }
 }

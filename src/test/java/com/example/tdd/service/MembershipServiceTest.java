@@ -5,7 +5,7 @@ import com.example.tdd.domain.MembershipRepository;
 import com.example.tdd.domain.MembershipType;
 import com.example.tdd.exception.MembershipErrorResult;
 import com.example.tdd.exception.MembershipException;
-import com.example.tdd.web.dto.MemberShipResponse;
+import com.example.tdd.web.dto.MembershipResponse;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -47,7 +47,7 @@ class MembershipServiceTest {
         doReturn(membership()).when(membershipRepository).save(any(Membership.class));
 
         // when
-        final MemberShipResponse result = target.addMembership(userId, membershipType, point);
+        final MembershipResponse result = target.addMembership(userId, membershipType, point);
 
         // then
         assertThat(result.getId()).isNotNull();

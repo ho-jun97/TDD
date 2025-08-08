@@ -2,6 +2,7 @@ package com.example.tdd.repository;
 
 
 import com.example.tdd.entity.Membership;
+import com.example.tdd.entity.MembershipType;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,17 +32,40 @@ public class MembershipRepositoryTest {
         // given
         final Membership membership = Membership.builder()
                 .userId("userId")
-                .membershipName("네이버")
+                .membershipType(MembershipType.NAVER)
                 .point(10000)
                 .build();
         // when
         final Membership result = membershipRepository.save(membership);
 
         // then
+        assertThat(result).isNotNull();
         assertThat(result.getId()).isNotNull();
         assertThat(result.getUserId()).isEqualTo("userId");
-        assertThat(result.getMembershipName()).isEqualTo("네이버");
+        assertThat(result.getMembershipType()).isEqualTo(MembershipType.NAVER);
         assertThat(result.getPoint()).isEqualTo(10000);
 
+    }
+
+    @Test
+    @DisplayName("멤버십 존재하는지 테스트")
+    public void membershipIsPresent() {
+        // given
+        final Membership membership = Membership.builder()
+                .userId("userId")
+                .membershipType(MembershipType.NAVER)
+                .point(10000)
+                .build();
+
+        // when
+        membershipRepository.save(membership);
+        final Membership result = membershipRepository.findByUserIdAndMembershipType("userId", MembershipType.NAVER);
+
+        // then
+        assertThat(result).isNotNull();
+        assertThat(result.getId()).isNotNull();
+        assertThat(result.getUserId()).isEqualTo("userId");
+        assertThat(result.getMembershipType()).isEqualTo(MembershipType.NAVER);
+        assertThat(result.getPoint()).isEqualTo(10000);
     }
 }

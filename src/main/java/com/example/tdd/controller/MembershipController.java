@@ -3,6 +3,7 @@ package com.example.tdd.controller;
 import com.example.tdd.dto.MembershipDetailResponse;
 import com.example.tdd.dto.MembershipRequest;
 import com.example.tdd.dto.MembershipAddResponse;
+import com.example.tdd.exception.MembershipErrorResult;
 import com.example.tdd.service.MembershipService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -35,5 +36,12 @@ public class MembershipController {
             @RequestHeader(USER_ID_HEADER) final String userId
     ) {
         return ResponseEntity.ok(membershipService.getMembershipList(userId));
+    }
+
+    @GetMapping("/api/v1/memberships/{membershipId}")
+    public ResponseEntity<MembershipDetailResponse> getMembership(
+            @RequestHeader(USER_ID_HEADER) final String userId,
+            @PathVariable final Long membershipId) {
+        return ResponseEntity.ok(membershipService.getMembership(membershipId, userId));
     }
 }

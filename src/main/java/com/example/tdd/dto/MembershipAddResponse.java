@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class MembershipResponse {
+public class MembershipAddResponse {
     private Long id;
     private MembershipType membershipType;
 }

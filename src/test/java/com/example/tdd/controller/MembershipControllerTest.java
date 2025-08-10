@@ -1,7 +1,7 @@
 package com.example.tdd.controller;
 
 import com.example.tdd.dto.MembershipRequest;
-import com.example.tdd.dto.MembershipResponse;
+import com.example.tdd.dto.MembershipAddResponse;
 import com.example.tdd.entity.MembershipType;
 import com.example.tdd.exception.GlobalExceptionHandler;
 import com.example.tdd.exception.MembershipErrorResult;
@@ -177,12 +177,12 @@ public class MembershipControllerTest {
     public void membershipRegisterSuccess() throws Exception {
         // given
         final String url = "/api/v1/memberships";
-        final MembershipResponse membershipResponse = MembershipResponse.builder()
+        final MembershipAddResponse membershipAddResponse = MembershipAddResponse.builder()
                 .id(-1L)
                 .membershipType(MembershipType.NAVER)
                 .build();
 
-        doReturn(membershipResponse).when(membershipService).addMembership("12345", MembershipType.NAVER, 10000);
+        doReturn(membershipAddResponse).when(membershipService).addMembership("12345", MembershipType.NAVER, 10000);
 
         // when
         ResultActions resultActions = mockMvc.perform(
@@ -195,9 +195,9 @@ public class MembershipControllerTest {
         // then
         resultActions.andExpect(status().isCreated());
 
-        final MembershipResponse response = gson.fromJson(resultActions.andReturn()
+        final MembershipAddResponse response = gson.fromJson(resultActions.andReturn()
                 .getResponse()
-                .getContentAsString(StandardCharsets.UTF_8), MembershipResponse.class);
+                .getContentAsString(StandardCharsets.UTF_8), MembershipAddResponse.class);
 
         assertThat(response.getId()).isNotNull();
         assertThat(response.getMembershipType()).isEqualTo(MembershipType.NAVER);

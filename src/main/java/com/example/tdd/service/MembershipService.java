@@ -2,6 +2,7 @@ package com.example.tdd.service;
 
 import com.example.tdd.dto.MembershipResponse;
 import com.example.tdd.entity.Membership;
+import com.example.tdd.dto.MembershipAddResponse;
 import com.example.tdd.entity.MembershipType;
 import com.example.tdd.exception.MembershipErrorResult;
 import com.example.tdd.exception.MembershipException;
@@ -16,7 +17,7 @@ public class MembershipService {
 
     private final MembershipRepository membershipRepository;
 
-    public MembershipResponse addMembership(String userId, MembershipType membershipType, Integer point) {
+    public MembershipAddResponse addMembership(String userId, MembershipType membershipType, Integer point) {
         final Membership result = membershipRepository.findByUserIdAndMembershipType(userId, membershipType);
 
         if(result != null){
@@ -31,7 +32,7 @@ public class MembershipService {
 
         Membership savedMembership = membershipRepository.save(membership);
 
-        return MembershipResponse.builder()
+        return MembershipAddResponse.builder()
                 .id(savedMembership.getId())
                 .membershipType(savedMembership.getMembershipType())
                 .build();

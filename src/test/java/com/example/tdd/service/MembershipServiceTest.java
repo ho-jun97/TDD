@@ -3,6 +3,7 @@ package com.example.tdd.service;
 
 import com.example.tdd.dto.MembershipResponse;
 import com.example.tdd.entity.Membership;
+import com.example.tdd.dto.MembershipAddResponse;
 import com.example.tdd.entity.MembershipType;
 import com.example.tdd.exception.MembershipErrorResult;
 import com.example.tdd.exception.MembershipException;
@@ -54,7 +55,7 @@ public class MembershipServiceTest {
         doReturn(membership()).when(membershipRepository).save(any(Membership.class));
 
         // when
-        final MembershipResponse result = target.addMembership(userId, membershipType, point);
+        final MembershipAddResponse result = target.addMembership(userId, membershipType, point);
 
         // then
         assertThat(result.getId()).isNotNull();

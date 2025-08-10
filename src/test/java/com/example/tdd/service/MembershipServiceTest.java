@@ -17,6 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -28,6 +29,7 @@ public class MembershipServiceTest {
     private final String userId = "userId";
     private final MembershipType membershipType = MembershipType.NAVER;
     private final Integer point = 10000;
+    private final Long membershipId = -1L;
 
     @InjectMocks
     private MembershipService target;
@@ -90,5 +92,19 @@ public class MembershipServiceTest {
 
         // then
         assertThat(result.size()).isEqualTo(3);
+    }
+
+    @Test
+    @DisplayName("멤버십상세조회실패_존재하지않음")
+    void getMembershipDetailFailNotExist() {
+        // given
+        doReturn(Optional.empty())
+                .when(membershipRepository).findById(membershipId);
+
+        // when
+        final MembershipException result = assertThrows(MembershipException.class, () -> target.getMembership(membershipId, userId));
+
+        // then
+        assertThat(result.getErrorResult()).isEqualTo(MembershipErrorResult.MEMBERSHIP_NOT_FOUND);
     }
 }

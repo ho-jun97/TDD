@@ -1,5 +1,6 @@
 package com.example.tdd.controller;
 
+import com.example.tdd.dto.MembershipDetailResponse;
 import com.example.tdd.dto.MembershipRequest;
 import com.example.tdd.dto.MembershipAddResponse;
 import com.example.tdd.entity.MembershipType;
@@ -233,5 +234,55 @@ public class MembershipControllerTest {
         resultActions.andExpect(status().isBadRequest());
     }
 
+    @Test
+    @DisplayName("멤버십상세조회 실패_사용자식별값이 헤더에 없음")
+    void getDetailMembershipFailNotHeaderValue() throws Exception{
+        // given
+        final String url = "/api/v1/memberships";
 
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                MockMvcRequestBuilders.get(url)
+        );
+
+        // then
+        resultActions.andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("멤버십상세조회 실패_멤버십이 존재하지않음")
+    void getDetailMembershipFailNotFound() throws Exception{
+        // given
+        final String url = "/api/v1/memberships/-1";
+        doThrow(new MembershipException(MembershipErrorResult.MEMBERSHIP_NOT_FOUND))
+                .when(membershipService).getMembership(-1L, "12345");
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                MockMvcRequestBuilders.get(url)
+                        .header(USER_ID_HEADER, "12345")
+        );
+
+        // then
+        resultActions.andExpect(status().isNotFound());
+    }
+
+    @Test
+    @DisplayName("멤버십 상세조회 성공")
+    void getDetailMembershipSuccess() throws Exception{
+        // given
+        final String url = "/api/v1/memberships/-1";
+        doReturn(MembershipDetailResponse.builder().build())
+                .when(membershipService).getMembership(-1L, "12345");
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                MockMvcRequestBuilders.get(url)
+                        .header(USER_ID_HEADER, "12345")
+//                        .param("membershipType", MembershipType.NAVER.name())
+        );
+
+        // then
+        resultActions.andExpect(status().isOk());
+    }
 }

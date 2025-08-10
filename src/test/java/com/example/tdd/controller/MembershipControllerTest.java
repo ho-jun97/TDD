@@ -12,6 +12,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -22,6 +25,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.nio.charset.StandardCharsets;
+import java.util.stream.Stream;
 
 import static com.example.tdd.constants.MembershipConstants.USER_ID_HEADER;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -49,6 +53,33 @@ public class MembershipControllerTest {
                 .setControllerAdvice(new GlobalExceptionHandler())
                 .build();
     }
+
+    @ParameterizedTest
+    @MethodSource("invalidedMembershipAddParameter") // 파라미터를 작성한 메소드 이름
+    public void membershipRegisterFailByParameter(final Integer point, final MembershipType membershipType) throws Exception {
+        // given
+        final String url = "/api/v1/memberships";
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                MockMvcRequestBuilders.post(url)
+                        .header(USER_ID_HEADER, "12345")
+                        .content(gson.toJson(membershipRequest(point, membershipType)))
+                        .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        // then
+        resultActions.andExpect(status().isBadRequest());
+    }
+    public static Stream<Arguments> invalidedMembershipAddParameter() {
+        return Stream.of(
+                Arguments.of(null, MembershipType.NAVER),
+                Arguments.of(-1, MembershipType.NAVER),
+                Arguments.of(10000,null)
+        );
+    }
+
+
 
     @Test
     @DisplayName("멤버십등록실패 사용자 식별값이 헤더에 없음")

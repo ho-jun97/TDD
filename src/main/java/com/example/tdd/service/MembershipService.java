@@ -1,6 +1,6 @@
 package com.example.tdd.service;
 
-import com.example.tdd.dto.MembershipResponse;
+import com.example.tdd.dto.MembershipDetailResponse;
 import com.example.tdd.entity.Membership;
 import com.example.tdd.dto.MembershipAddResponse;
 import com.example.tdd.entity.MembershipType;
@@ -9,6 +9,8 @@ import com.example.tdd.exception.MembershipException;
 import com.example.tdd.repository.MembershipRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -36,5 +38,13 @@ public class MembershipService {
                 .id(savedMembership.getId())
                 .membershipType(savedMembership.getMembershipType())
                 .build();
+    }
+
+    public List<MembershipDetailResponse> getMembershipList(final String userId) {
+        final List<Membership> membershipList = membershipRepository.findAllByUserId(userId);
+
+        return membershipList.stream()
+                .map(MembershipDetailResponse::of)
+                .toList();
     }
 }

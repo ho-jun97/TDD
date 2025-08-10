@@ -217,4 +217,19 @@ public class MembershipControllerTest {
         assertThat(target).isNotNull();
         assertThat(mockMvc).isNotNull();
     }
+
+    @Test
+    @DisplayName("멤버십목록조회 실패 사용자 식별값이 헤더에 없음")
+    void getMemberFailByNoHeaderValue() throws Exception {
+        // given
+        final String url = "/api/v1/memberships";;
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                MockMvcRequestBuilders.get(url)
+        );
+
+        // then
+        resultActions.andExpect(status().isBadRequest());
+    }
 }

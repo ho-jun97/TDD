@@ -107,4 +107,32 @@ public class MembershipServiceTest {
         // then
         assertThat(result.getErrorResult()).isEqualTo(MembershipErrorResult.MEMBERSHIP_NOT_FOUND);
     }
+    @Test
+    @DisplayName("멤버십상세조회실패_본인이아님")
+    void getMembershipDetailFailByUserId() {
+        // given
+        doReturn(Optional.empty())
+                .when(membershipRepository).findById(membershipId);
+
+        // when
+        final MembershipException result = assertThrows(MembershipException.class, () ->target.getMembership(membershipId, "notonwer"));
+
+        // then
+        assertThat(result.getErrorResult()).isEqualTo(MembershipErrorResult.MEMBERSHIP_NOT_FOUND);
+    }
+
+    @Test
+    @DisplayName("멤버십상세조회성공")
+    void getMembershipDetailSuccess() {
+        // given
+        doReturn(Optional.of(membership())).when(membershipRepository).findById(membershipId);
+
+        // when
+        final MembershipDetailResponse result = target.getMembership(membershipId, userId);
+
+        // then
+        assertThat(result.getId()).isNotNull();
+        assertThat(result.getMembershipType()).isEqualTo(MembershipType.NAVER);
+        assertThat(result.getPoint()).isEqualTo(point);
+    }
 }

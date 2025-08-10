@@ -1,20 +1,22 @@
 package com.example.tdd.service;
 
 
-import com.example.tdd.dto.MembershipResponse;
+import com.example.tdd.dto.MembershipDetailResponse;
 import com.example.tdd.entity.Membership;
 import com.example.tdd.dto.MembershipAddResponse;
 import com.example.tdd.entity.MembershipType;
 import com.example.tdd.exception.MembershipErrorResult;
 import com.example.tdd.exception.MembershipException;
 import com.example.tdd.repository.MembershipRepository;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.Arrays;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -72,5 +74,21 @@ public class MembershipServiceTest {
                 .point(point)
                 .membershipType(MembershipType.NAVER)
                 .build();
+    }
+    @Test
+    @DisplayName("멤버십목록조회")
+    void getMembershipList() {
+        // given
+        doReturn(Arrays.asList(
+                Membership.builder().build(),
+                Membership.builder().build(),
+                Membership.builder().build()
+        )).when(membershipRepository).findAllByUserId(userId);
+
+        // when
+        final List<MembershipDetailResponse> result = target.getMembershipList(userId);
+
+        // then
+        assertThat(result.size()).isEqualTo(3);
     }
 }

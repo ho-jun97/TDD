@@ -109,4 +109,22 @@ public class MembershipRepositoryTest {
 
         assertThat(result.size()).isEqualTo(2);
     }
+
+    @Test
+    @DisplayName("멤버십 추가 후 삭제")
+    void addMembershipAfterDelete() {
+        // given
+        final Membership membership = Membership.builder()
+                .userId("userId")
+                .membershipType(MembershipType.NAVER)
+                .point(10000)
+                .build();
+
+        final Membership saveMembership = membershipRepository.save(membership);
+
+        // when
+        membershipRepository.deleteById(saveMembership.getId());
+
+        // then
+    }
 }

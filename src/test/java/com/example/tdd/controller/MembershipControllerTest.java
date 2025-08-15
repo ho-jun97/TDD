@@ -19,6 +19,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.convert.DataSizeUnit;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -284,5 +285,34 @@ public class MembershipControllerTest {
 
         // then
         resultActions.andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("멤버십삭제실패_사용자식별값이헤더에없음")
+    void membershipDeleteFailByNoHeaderValue() throws Exception{
+        // given
+        final String url = "/api/v1/memberships/-1";
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                MockMvcRequestBuilders.delete(url)
+        );
+
+        resultActions.andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("멤버십삭제 성공")
+    void membershipDeleteSuccess() throws Exception{
+        // given
+        final String url = "/api/v1/memberships/-1";
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                MockMvcRequestBuilders.delete(url)
+                        .header(USER_ID_HEADER, "12345")
+        );
+
+        resultActions.andExpect(status().isNoContent());
     }
 }

@@ -1,4 +1,4 @@
-package com.example.tdd.repository;
+package com.example.tdd.membership.repository;
 
 import com.example.tdd.entity.Membership;
 import com.example.tdd.entity.MembershipType;

@@ -1,10 +1,9 @@
-package com.example.tdd.controller;
+package com.example.tdd.membership.controller;
 
 import com.example.tdd.dto.MembershipDetailResponse;
 import com.example.tdd.dto.MembershipRequest;
 import com.example.tdd.dto.MembershipAddResponse;
-import com.example.tdd.exception.MembershipErrorResult;
-import com.example.tdd.service.MembershipService;
+import com.example.tdd.membership.service.MembershipService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

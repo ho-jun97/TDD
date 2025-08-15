@@ -1,4 +1,4 @@
-package com.example.tdd.controller;
+package com.example.tdd.membership.controller;
 
 import com.example.tdd.dto.MembershipDetailResponse;
 import com.example.tdd.dto.MembershipRequest;
@@ -7,7 +7,7 @@ import com.example.tdd.entity.MembershipType;
 import com.example.tdd.exception.GlobalExceptionHandler;
 import com.example.tdd.exception.MembershipErrorResult;
 import com.example.tdd.exception.MembershipException;
-import com.example.tdd.service.MembershipService;
+import com.example.tdd.membership.service.MembershipService;
 import com.google.gson.Gson;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -19,7 +19,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.convert.DataSizeUnit;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;

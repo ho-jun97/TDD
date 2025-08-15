@@ -1,4 +1,4 @@
-package com.example.tdd.service;
+package com.example.tdd.membership.service;
 
 import com.example.tdd.dto.MembershipDetailResponse;
 import com.example.tdd.entity.Membership;
@@ -6,7 +6,7 @@ import com.example.tdd.dto.MembershipAddResponse;
 import com.example.tdd.entity.MembershipType;
 import com.example.tdd.exception.MembershipErrorResult;
 import com.example.tdd.exception.MembershipException;
-import com.example.tdd.repository.MembershipRepository;
+import com.example.tdd.membership.repository.MembershipRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

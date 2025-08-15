@@ -211,6 +211,12 @@ public class MembershipControllerTest {
                 .build();
     }
 
+    private MembershipRequest membershipRequest(final Integer point) {
+        return MembershipRequest.builder()
+                .point(point)
+                .build();
+    }
+
     @Test
     @DisplayName("mockMvc Null 아님")
     public void mockMvcNotNull() throws Exception {
@@ -312,6 +318,59 @@ public class MembershipControllerTest {
                         .header(USER_ID_HEADER, "12345")
         );
 
+        resultActions.andExpect(status().isNoContent());
+    }
+
+    @Test
+    @DisplayName("멤버십적립식패_사용자식별값이헤더에없음")
+    void membershipGetPointFailByNoHeaderValue() throws Exception{
+        // given
+        final String url = "/api/v1/memberships/-1/accumulate";
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                MockMvcRequestBuilders.post(url)
+                        .content(gson.toJson(membershipRequest(10000)))
+                        .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        // then
+        resultActions.andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("멤버십적립실패_포인트가음수")
+    void membershipGetPointFailMinus() throws Exception{
+        // given
+        final String url = "/api/v1/memberships/-1/accumulate";
+
+        // when
+        final ResultActions resultActions = mockMvc.perform(
+                MockMvcRequestBuilders.post(url)
+                        .header(USER_ID_HEADER, "12345")
+                        .content(gson.toJson(membershipRequest(-1, MembershipType.NAVER)))
+                        .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        // then
+        resultActions.andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("멤버십적립성공")
+    void membershipGetPointSuccess() throws Exception{
+        // given
+        final String url = "/api/v1/memberships/-1/accumulate";
+
+        // when
+        final ResultActions resultActions = mockMvc.perform(
+                MockMvcRequestBuilders.post(url)
+                        .header(USER_ID_HEADER, "12345")
+                        .content(gson.toJson(membershipRequest(10000)))
+                        .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        // then
         resultActions.andExpect(status().isNoContent());
     }
 }

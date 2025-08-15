@@ -8,6 +8,7 @@ import com.example.tdd.entity.MembershipType;
 import com.example.tdd.exception.MembershipErrorResult;
 import com.example.tdd.exception.MembershipException;
 import com.example.tdd.membership.repository.MembershipRepository;
+import com.example.tdd.point.RatePointService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -36,6 +37,9 @@ public class MembershipServiceTest {
 
     @Mock
     private MembershipRepository membershipRepository;
+
+    @Mock
+    private RatePointService ratePointService;
 
     @Test
     @DisplayName("멤버십등록실패_이미존재함")
@@ -174,5 +178,47 @@ public class MembershipServiceTest {
         // when
         target.removeMembership(membershipId, userId);
 
+    }
+
+    @Test
+    @DisplayName("멤버십적립실패_존재하지않음")
+    void getPointFailNotExist() {
+        // given
+        doReturn(Optional.empty()).when(membershipRepository).findById(membershipId);
+
+        // when
+        final MembershipException result = assertThrows(MembershipException.class, () -> target.accumulateMembershipPoint(membershipId, userId, 10000));
+
+        // then
+        assertThat(result.getErrorResult()).isEqualTo(MembershipErrorResult.MEMBERSHIP_NOT_FOUND);
+
+    }
+
+    @Test
+    @DisplayName("멤버십적립실패_본인이아님")
+    void getPointFailNotMine() {
+        // given
+        final Membership membership = membership();
+        doReturn(Optional.of(membership)).when(membershipRepository).findById(membershipId);
+
+        // when
+        MembershipException result = assertThrows(MembershipException.class, () -> target.accumulateMembershipPoint(membershipId, "notonwer", 10000));
+
+        // then
+        assertThat(result.getErrorResult()).isEqualTo(MembershipErrorResult.NOT_MEMBERSHIP_OWNER);
+
+    }
+
+    @Test
+    @DisplayName("멤버십적립성공")
+    void getPointSuccess() {
+        // given
+        final Membership membership = membership();
+        doReturn(Optional.of(membership)).when(membershipRepository).findById(membershipId);
+
+        // when
+        target.accumulateMembershipPoint(membershipId, userId, 10000);
+
+        // then
     }
 }

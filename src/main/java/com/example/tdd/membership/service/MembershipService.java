@@ -7,6 +7,9 @@ import com.example.tdd.entity.MembershipType;
 import com.example.tdd.exception.MembershipErrorResult;
 import com.example.tdd.exception.MembershipException;
 import com.example.tdd.membership.repository.MembershipRepository;
+import com.example.tdd.point.PointService;
+import com.example.tdd.point.RatePointService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +20,7 @@ import java.util.List;
 public class MembershipService {
 
 
+    private final PointService ratePointService;
     private final MembershipRepository membershipRepository;
 
     public MembershipAddResponse addMembership(String userId, MembershipType membershipType, Integer point) {
@@ -68,5 +72,19 @@ public class MembershipService {
         }
 
         membershipRepository.deleteById(membershipId);
+    }
+
+    @Transactional
+    public void accumulateMembershipPoint(Long membershipId, String userId, int amount) {
+        final Membership membership = membershipRepository.findById(membershipId).orElseThrow(
+                () -> new MembershipException(MembershipErrorResult.MEMBERSHIP_NOT_FOUND));
+
+        if(!membership.getUserId().equals(userId)){
+            throw new MembershipException(MembershipErrorResult.NOT_MEMBERSHIP_OWNER);
+        }
+
+        final int additionalAmount = ratePointService.calculateAmount(amount);
+
+        membership.setPoint(additionalAmount + membership.getPoint());
     }
 }
